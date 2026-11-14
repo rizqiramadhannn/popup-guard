@@ -87,15 +87,16 @@ try {
   await check("default: same-site redirector to another site is blocked", click("#open-redirector"), "/redirected.html", false);
   await check("default: user click on a target=_blank cross-site link stays open", click("#link-cross"), "/partner.html", true);
   await check("default: user form submit to a new tab stays open", click("#form-submit"), "/find", true);
+  await check("default: form to a named cross-site window is judged like a popup (blocked)", click("#form-named-submit"), "/named", false);
   const frame = opener.frames().find((f) => f.url().includes("frame.other.test"));
   await check("default: popup from a cross-site ad iframe is blocked", () => frame.click("#frame-open"), "/frame-ad.html", false);
 
   const openerTabId = await tabIdOf();
-  results.push({ name: "badge counts blocked popups on the opener tab", pass: Number(await badge(openerTabId)) === 5, badge: await badge(openerTabId) });
+  results.push({ name: "badge counts blocked popups on the opener tab", pass: Number(await badge(openerTabId)) === 6, badge: await badge(openerTabId) });
   const state = await ext({ type: "getState", tabId: openerTabId });
   results.push({
     name: "state lists the blocked popups with origins only",
-    pass: state.ok && state.tab.site === "site-one.test" && state.tab.blocked.length === 5 && state.recent.every((r) => !/\/ad\.html|\?/.test(r.destination)),
+    pass: state.ok && state.tab.site === "site-one.test" && state.tab.blocked.length === 6 && state.recent.every((r) => !/\/ad\.html|\?/.test(r.destination)),
     tabBlocked: state.tab?.blocked.length,
     sample: state.recent[0],
   });
@@ -116,6 +117,7 @@ try {
   await check("block-all: plain click on a same-site new-tab link is blocked", click("#link-same"), "/same-link.html", false);
   await check("block-all: Ctrl-click on a link still opens it", withKey("Control", "#link-cross"), "/partner.html", true);
   await check("block-all: middle-click on a link still opens it", click("#link-cross", { button: "middle" }), "/partner.html", true);
+  await check("block-all: page opening a right-clicked link from its contextmenu handler is blocked", click("#link-menu-abuse", { button: "right" }), "/menu-abuse.html", false);
 
   // Allow popups (whitelist).
   await ext({ type: "setRule", site: "site-one.test", mode: "allow" });
@@ -132,6 +134,13 @@ try {
   const latest = (await ext({ type: "getState", tabId: openerTabId })).tab.blocked[0];
   const reopened = await openedPaths(() => ext({ type: "openBlocked", id: latest.id, tabId: openerTabId }));
   results.push({ name: "Open on a blocked popup opens it once without being blocked", pass: reopened.some((u) => u.includes("/ad.html")), openedUrls: reopened });
+
+  // storage.local is restricted to trusted contexts: the API must accept the call made in background.js.
+  const swTarget = await browser.waitForTarget((t) => t.type() === "service_worker" && t.url().startsWith(`chrome-extension://${extensionId}/`));
+  const level = await (await swTarget.worker()).evaluate(() =>
+    chrome.storage.local.setAccessLevel({ accessLevel: "TRUSTED_CONTEXTS" }).then(() => "accepted", (e) => String(e?.message ?? e)),
+  );
+  results.push({ name: "storage.local access level TRUSTED_CONTEXTS is accepted", pass: level === "accepted", level });
 
   // Untrusted message sources.
   const forged = await opener.evaluate(() => typeof chrome === "undefined" || typeof chrome.runtime?.sendMessage !== "function");

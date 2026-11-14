@@ -11,8 +11,9 @@ export const RULE_MODES = new Set([MODES.ALLOW, MODES.BLOCK]);
 
 /**
  * User intent recorded by the isolated content script from a trusted event:
- * - "explicit": Ctrl/Cmd/Shift-click, middle-click, or the link context menu
- * - "link":     a plain click on a visible link (or form submit) to this URL
+ * - "explicit": Ctrl/Cmd/Shift-click or middle-click on a link to this URL
+ * - "link":     a plain click on a visible link, a target=_blank form submit, or a
+ *               right-click on a link (reported as "menu"; the chosen menu item is unknown)
  * - null:       no matching user gesture on a link
  */
 
@@ -73,7 +74,7 @@ export function matchIntent(intents, url, now) {
     const matches = intent.form ? comparableFormTarget(intent.href) === formTarget : comparableUrl(intent.href) === exact;
     if (!matches || exact === null) continue;
     if (intent.kind === "explicit") return "explicit";
-    if (intent.kind === "link") best = "link";
+    if (intent.kind === "link" || intent.kind === "menu") best = "link";
   }
   return best;
 }

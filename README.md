@@ -34,7 +34,7 @@ Click the toolbar icon on any web page:
 | Choice | What happens on this site |
 | --- | --- |
 | **Block cross-site popups** (default) | New tabs or windows that the page opens to another site are closed. Same-site windows and links you click stay allowed. |
-| **Block all popups** | Every new tab or window the page opens is closed, including same-site ones and plain clicks on new-tab links. Ctrl/⌘-click, Shift-click, middle-click and the “Open link in new tab” menu still work. |
+| **Block all popups** | Every new tab or window the page opens is closed, including same-site ones, plain clicks on new-tab links and “Open link in new tab” from the right-click menu. Ctrl/⌘-click, Shift-click and middle-click still work. |
 | **Allow popups** | Whitelist: nothing is blocked on this site. Use it for sign-in, payment, chat or video windows a site needs. |
 
 The badge on the icon counts popups blocked on the current tab. The panel lists
@@ -93,7 +93,7 @@ There are no `tabs` or `host_permissions` entries, no remote code, and no networ
 
 ### Privacy
 
-- Stored on this device (`chrome.storage.local`): rules, the on/off switch, a
+- Stored on this device (`chrome.storage.local`, restricted to the extension's own pages and service worker): rules, the on/off switch, a
   total count, and the last 30 blocks as *time, opener site, blocked origin
   (scheme, host, port), reason*. Paths and query strings are not stored.
 - Kept in memory only (`chrome.storage.session`, cleared when the browser
@@ -118,6 +118,11 @@ There are no `tabs` or `host_permissions` entries, no remote code, and no networ
 - The click report and the popup event are separate. Popup Guard waits up to
   300 ms for the click report before closing a window; on a very slow machine a
   clicked link could rarely be closed. Ctrl/middle-click are unaffected in practice.
+- A right-click on a link counts like a plain click: the extension cannot see which
+  menu item you chose, and a page could open the link from its own right-click
+  handler. So “Open link in new tab” works in the default mode but is blocked on
+  sites set to **Block all popups**; use Ctrl/⌘-click or middle-click there.
+- Only forms with `target="_blank"` count as a user-opened tab. A form that targets a named window (`target="results"`) is judged like any other popup, because it may reuse an existing window.
 - Popups opened by other extensions' pages, or created by the browser itself,
   are not judged. If the opener's site cannot be read, the popup is allowed
   (fail open).

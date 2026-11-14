@@ -3,7 +3,7 @@
 import { RULE_MODES, MODES } from "./decision.js";
 
 const MAX_URL = 4096;
-const INTENT_KINDS = new Set(["explicit", "link"]);
+const INTENT_KINDS = new Set(["explicit", "link", "menu"]);
 
 function isWebUrl(value) {
   if (typeof value !== "string" || value.length === 0 || value.length > MAX_URL) return false;

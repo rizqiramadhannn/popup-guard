@@ -15,9 +15,13 @@ import { PSL_VERSION } from "./lib/psl-data.js";
 const EXTENSION_ID = chrome.runtime.id;
 const EXTENSION_ORIGIN = chrome.runtime.getURL("");
 const INTENT_GRACE_MS = 300; // wait for a click report that may arrive just after the popup event
-const INTENT_TTL_MS = { link: 3000, explicit: 10000 };
+const INTENT_TTL_MS = { link: 3000, explicit: 10000, menu: 10000 }; // a context menu choice can take a while
 const WATCH_MS = 10000; // judge a new popup's first navigations and redirects for this long
 const BLOCKED_URL_LIMIT = 50;
+
+// Keep rules and the blocked log out of reach of content scripts (storage.local
+// defaults to all contexts; storage.session already defaults to trusted ones).
+chrome.storage.local.setAccessLevel?.({ accessLevel: "TRUSTED_CONTEXTS" }).catch(() => {});
 
 const store = new Store(chrome.storage.local);
 let cachedState = null;

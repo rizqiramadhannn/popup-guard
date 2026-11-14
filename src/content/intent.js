@@ -79,14 +79,17 @@
     true,
   );
 
-  // The context menu offers "Open link in new tab/window".
+  // The context menu offers "Open link in new tab/window", but the extension cannot
+  // see which menu item was chosen, and the page's own contextmenu handler could
+  // open the link instead. So a right-click counts like a plain click ("menu"):
+  // allowed in default mode, still blocked when the site is set to block all.
   window.addEventListener(
     "contextmenu",
     (event) => {
       if (!event.isTrusted) return;
       const link = linkIn(event);
       const href = link && hrefOf(link);
-      if (href) report("explicit", href);
+      if (href && looksIntended(link)) report("menu", href);
     },
     true,
   );
@@ -100,7 +103,9 @@
       if (!(form instanceof HTMLFormElement)) return;
       const submitter = event.submitter;
       const target = submitter?.getAttribute("formtarget") ?? form.getAttribute("target") ?? "";
-      if (!target || target === "_self" || target === "_parent" || target === "_top") return;
+      // Only "_blank" always opens a new tab. A named target may reuse an existing
+      // window, and a report for it would linger and could excuse a script popup.
+      if (target.trim().toLowerCase() !== "_blank") return;
       const action = webUrl(submitter?.getAttribute("formaction") ?? form.getAttribute("action") ?? "", document.baseURI);
       if (action) report("link", action, true);
     },

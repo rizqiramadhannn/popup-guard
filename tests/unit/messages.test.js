@@ -23,6 +23,7 @@ test("intent messages are validated", () => {
   assert.deepEqual(parseIntent({ type: "intent", kind: "link", href: "https://a.test/x" }), { kind: "link", href: "https://a.test/x", form: false });
   assert.equal(parseIntent({ type: "intent", kind: "link", href: "javascript:alert(1)" }), null);
   assert.equal(parseIntent({ type: "intent", kind: "admin", href: "https://a.test/" }), null);
+  assert.equal(parseIntent({ type: "intent", kind: "menu", href: "https://a.test/" })?.kind, "menu");
   assert.equal(parseIntent({ type: "intent", kind: "link", href: `https://a.test/${"x".repeat(5000)}` }), null);
   assert.equal(parseIntent({ type: "setRule", site: "a.test", mode: "allow" }), null);
   assert.equal(parseIntent(null), null);

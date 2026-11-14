@@ -58,6 +58,12 @@ test("explicit intent outranks a plain link for the same URL", () => {
   assert.equal(matchIntent(intents, "https://x.test/", 0), "explicit");
 });
 
+test("a right-click (menu) intent counts as a plain link, never as explicit", () => {
+  const intents = [{ kind: "menu", href: "https://ads.test/x", expires: 9e9 }];
+  assert.equal(matchIntent(intents, "https://ads.test/x", 0), "link");
+  assert.equal(decide({ ...base, mode: MODES.BLOCK, destination: web("ads.test"), intent: "link" }).action, "block");
+});
+
 test("form intents match origin and path, since the browser adds the query", () => {
   const intents = [{ kind: "link", href: "https://search.test/find", form: true, expires: 9e9 }];
   assert.equal(matchIntent(intents, "https://search.test/find?q=shoes", 0), "link");

@@ -29,8 +29,10 @@ export function startServer() {
           <button id="open-blank" onclick="const w = window.open(''); w.location.href = '${at("ads.other.test")}/late.html'">blank</button>
           <button id="open-redirector" onclick="window.open('/redirect?to=${encodeURIComponent(at("ads.other.test") + "/redirected.html")}')">redirector</button>
           <p><a id="link-cross" target="_blank" href="${at("partner.other.test")}/partner.html">Partner link</a></p>
+          <p><a id="link-menu-abuse" href="${at("ads.other.test")}/menu-abuse.html" oncontextmenu="window.open(this.href)">Right-click me</a></p>
           <p><a id="link-same" target="_blank" href="${at("www.site-one.test")}/same-link.html">Same-site link</a></p>
           <form id="form" target="_blank" action="${at("search.other.test")}/find"><input name="q" value="x"><button id="form-submit">Search</button></form>
+          <form id="form-named" target="results" action="${at("search.other.test")}/named"><input name="q" value="x"><button id="form-named-submit">Named</button></form>
           <iframe id="ad-frame" src="${at("frame.other.test")}/frame.html" width="300" height="80"></iframe>`,
         ),
       );

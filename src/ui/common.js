@@ -13,7 +13,7 @@ export const MODE_TEXT = {
   },
   block: {
     label: "Block all popups",
-    hint: "Also blocks same-site windows and plain new-tab links. Ctrl/⌘-click, middle-click and “Open link in new tab” still work.",
+    hint: "Also blocks same-site windows, plain new-tab links and “Open link in new tab” from the menu. Ctrl/⌘-click and middle-click still work.",
   },
   allow: {
     label: "Allow popups",
