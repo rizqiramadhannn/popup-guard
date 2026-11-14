@@ -1,0 +1,20 @@
+{
+  "name": "popup-guard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chrome/Edge Manifest V3 extension that blocks cross-site popups, with per-site allow and block rules.",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test \"tests/unit/*.test.js\"",
+    "test:e2e": "node tests/e2e/smoke.mjs",
+    "check": "node scripts/check.mjs",
+    "package": "node scripts/package.mjs",
+    "icons": "node scripts/build-icons.mjs",
+    "update-psl": "node scripts/update-psl.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "25.17.0"
+  }
+}

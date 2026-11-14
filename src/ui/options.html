@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Popup Guard settings</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="options">
+  <header class="bar page-bar">
+    <img src="../../icons/icon-48.png" width="28" height="28" alt="">
+    <h1>Popup Guard</h1>
+    <label class="switch">
+      <input type="checkbox" id="enabled" role="switch">
+      <span class="track" aria-hidden="true"></span>
+      <span class="switch-text" id="enabled-text">On</span>
+    </label>
+  </header>
+
+  <main class="page">
+    <section aria-labelledby="rules-heading" class="card">
+      <h2 id="rules-heading">Site rules</h2>
+      <p class="muted">A rule applies to the page you are on, the opener. It covers the whole site, including its subdomains: a rule for <code>example.co.uk</code> also covers <code>shop.example.co.uk</code>. Sites without a rule block popups that open another site.</p>
+      <form id="add-form" class="add-form" novalidate>
+        <label for="add-site">Site or address</label>
+        <input id="add-site" name="site" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="example.com" required aria-describedby="add-error">
+        <label for="add-mode" class="visually-hidden">Rule</label>
+        <select id="add-mode" name="mode">
+          <option value="allow">Allow popups</option>
+          <option value="block">Block all popups</option>
+        </select>
+        <button type="submit">Add rule</button>
+        <p id="add-error" class="error" role="alert"></p>
+      </form>
+      <table class="table" id="rules-table">
+        <caption class="visually-hidden">Site rules</caption>
+        <thead><tr><th scope="col">Site</th><th scope="col">Popups</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+        <tbody id="rules"></tbody>
+      </table>
+      <p id="rules-empty" class="muted">No site rules yet. Every site uses the default: block cross-site popups.</p>
+    </section>
+
+    <section aria-labelledby="recent-heading" class="card">
+      <div class="card-head">
+        <h2 id="recent-heading">Recently blocked</h2>
+        <button type="button" id="clear-recent" class="secondary">Clear</button>
+      </div>
+      <p class="muted" id="total"></p>
+      <table class="table">
+        <caption class="visually-hidden">Recently blocked popups</caption>
+        <thead><tr><th scope="col">Time</th><th scope="col">From site</th><th scope="col">Tried to open</th><th scope="col">Why</th></tr></thead>
+        <tbody id="recent"></tbody>
+      </table>
+      <p id="recent-empty" class="muted">No blocked popups recorded.</p>
+      <p class="muted small-text">Stored only on this device: the time, the opener site, the blocked origin and the reason. Full popup addresses are kept in memory for “Open” and are cleared when the browser closes.</p>
+    </section>
+
+    <section aria-labelledby="how-heading" class="card">
+      <h2 id="how-heading">How it decides</h2>
+      <ul class="plain">
+        <li><b>Default.</b> A new tab or window that a page opens to <em>another site</em> is closed. Windows to the same site stay open, and so do links you click yourself, including <code>target="_blank"</code> links and forms.</li>
+        <li><b>Block all popups.</b> Also closes same-site windows and plain clicks on new-tab links. Ctrl/⌘-click, Shift-click, middle-click and the “Open link in new tab” menu still open links.</li>
+        <li><b>Allow popups.</b> Nothing is blocked on that site. Use this for sign-in, payment or chat windows that a site needs.</li>
+        <li>Blank windows are judged by their first destination, and same-site windows that redirect to another site within 10 seconds are closed.</li>
+      </ul>
+      <h3>Limits</h3>
+      <ul class="plain muted">
+        <li>A blocked window exists for a moment before it is closed; the other site may already have received the request.</li>
+        <li>Popup Guard does not remove in-page overlays, modal dialogs, notifications, or redirects of the current tab (“tab-unders”).</li>
+        <li>It cannot act on browser pages (<code>chrome://</code>, the Web Store) or on popups that the browser's own blocker already stopped.</li>
+        <li>Cross-site sign-in popups (for example “Sign in with Google”) are blocked by default; choose <b>Allow popups</b> for that site.</li>
+      </ul>
+      <p class="muted small-text" id="psl"></p>
+    </section>
+  </main>
+  <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
+  <script type="module" src="options.js"></script>
+</body>
+</html>

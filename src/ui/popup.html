@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Popup Guard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="popup">
+  <header class="bar">
+    <img src="../../icons/icon-32.png" width="20" height="20" alt="">
+    <h1>Popup Guard</h1>
+    <label class="switch">
+      <input type="checkbox" id="enabled" role="switch">
+      <span class="track" aria-hidden="true"></span>
+      <span class="switch-text" id="enabled-text">On</span>
+    </label>
+  </header>
+
+  <main>
+    <section id="site-section" aria-labelledby="site-heading">
+      <h2 id="site-heading" class="eyebrow">This site</h2>
+      <p class="site-name" id="site-name">…</p>
+      <fieldset id="modes" class="modes">
+        <legend class="visually-hidden" id="modes-legend">Popups from this site</legend>
+      </fieldset>
+    </section>
+
+    <section id="unsupported" class="note" hidden>
+      Popup Guard works on http and https pages. This page cannot open popups that it can judge.
+    </section>
+
+    <section aria-labelledby="blocked-heading">
+      <h2 id="blocked-heading" class="eyebrow">Blocked on this tab <span id="tab-count" class="count"></span></h2>
+      <ul id="blocked" class="blocked-list"></ul>
+      <p id="blocked-empty" class="muted">Nothing blocked on this page.</p>
+    </section>
+
+    <p id="disabled-note" class="note warn" hidden>Popup Guard is off. Popups are not blocked anywhere.</p>
+  </main>
+
+  <footer class="footer">
+    <button type="button" class="link-button" id="open-options">Settings &amp; site rules</button>
+    <span id="total" class="muted"></span>
+  </footer>
+  <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
